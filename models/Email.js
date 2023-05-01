@@ -1,23 +1,19 @@
 const { Schema, Types } = require('mongoose');
 
-const commentSchema = new Schema(
+const emailSchema = new Schema(
   {
-    commentId: {
+    emailId: {
       type: Schema.Types.ObjectId,
       default: () => new Types.ObjectId(),
     },
-    commentName: {
+    emailName: {
       type: String,
       required: true,
       maxlength: 50,
       minlength: 4,
-      default: 'unintentified comment',
+      default: 'unindentified email',
     },
-    score: {
-      type: Number,
-      required: true,
-      default: () => Math.floor(Math.random() * (100 - 70 + 1) + 70),
-    },
+  
     createdAt: {
       type: Date,
       default: Date.now,
@@ -30,5 +26,6 @@ const commentSchema = new Schema(
     id: false,
   }
 );
+const Email = model('email', emailSchema);
 
-module.exports = commentSchema;
+module.exports = Email;
