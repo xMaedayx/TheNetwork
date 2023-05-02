@@ -1,4 +1,5 @@
-const { Schema, Types } = require('mongoose');
+const { Schema, Types, model } = require('mongoose');
+const reactionSchema = require('./Reaction');
 
 const reactionSchema = new Schema(
   {
@@ -19,11 +20,11 @@ const reactionSchema = new Schema(
       default: 'unidentified user',
     },
     createdAt: {
-      type: Date.now,
+      type: Date,
       required: true,
       unqiue: true,
       match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      default: 'invalid email',
+      default: Date.now,
     }
   
     

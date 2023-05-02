@@ -45,7 +45,7 @@ module.exports = {
       }
 
       await Reaction.deleteMany({ _id: { $in: thought.reaction } });
-      res.json({ message: 'Course and students deleted!' });
+      res.json({ message: 'Reaction and user deleted!' });
     } catch (err) {
       res.status(500).json(err);
     }
@@ -60,7 +60,7 @@ module.exports = {
       );
 
       if (!thought) {
-        res.status(404).json({ message: 'No course with this id!' });
+        res.status(404).json({ message: 'No thought found!' });
       }
 
       res.json(thought);
@@ -68,14 +68,14 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-};
+}
 
 addThought({params, body}, rest); {
   Thought.create(body)
   .then(({ _id }) => {
     return User.findOneAndUpdate(
       { _id: params.userId },
-      {$push: { thoughts: _id} },
+      {$push: { thought: _id} },
       {new: true}
     );
 })
