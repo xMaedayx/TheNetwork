@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const userSchema = require('./User');
+
 
 const userSchema = new Schema(
   {
@@ -26,7 +26,7 @@ const userSchema = new Schema(
       ref: 'Friends',
     },
    
-    user: [userSchema],
+    //user: [userSchema],
   },
   {
     toJSON: {

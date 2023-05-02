@@ -24,7 +24,7 @@ const thoughtsSchema = new Schema(
       type: Date,
       default: Date.now,
     },
-    reactions: [reactionSchema]
+    //reactions: [reactionSchema]
 
     
   },
@@ -44,6 +44,6 @@ thoughtsSchema.virtual('formattedCreatedAt').get(function() {
 });
 
 
-  const Thoughts = model('thoughts', thoughtsSchema);
+  const Thought = model('thought', thoughtsSchema);
 
-module.exports = Thoughts;
+module.exports = Thought;
