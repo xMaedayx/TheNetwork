@@ -51,6 +51,7 @@ module.exports = {
       const user = await User.create(req.body);
       res.json(user);
     } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   },
@@ -81,6 +82,10 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
+  // Update a User
+ // async updateUser(req, res) {
+
 
   // Add an assignment to a student
   async addThought(req, res) {
