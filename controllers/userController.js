@@ -1,36 +1,31 @@
 const { ObjectId } = require('mongoose').Types;
-const { User, Email } = require('../models');
+const { User, Friend } = require('../models');
 
-// Aggregate function to get the number of students overall
-const friendsCount = async () => {
-  const numberOfFriends = await User.aggregate()
-    .count('friendsCount');
-  return numberOfFriends;
-}
+
+
 
 
 
 module.exports = {
   // Get all users
-  async getUser(req, res) {
-    try {
-      const user = await User.find();
-
-      const userObj = {
-        user,
-        friendsCount: await friendsCount(),
-      };
-
-      res.json(userObj);
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json(err);
-    }
+  getUser(req, res) {
+    User.find({})
+      .populate({
+        path: "friends",
+        select: "-__v",
+      })
+      .select("-__v")
+      .sort({ _id: -1 })
+      .then((dbUserData) => res.json(dbUserData))
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(400);
+      });
   },
   // Get a single student
   async getSingleUser(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.userId })
+      const user = await User.findOne({ _id: req.params.id })
         .select('-__v');
 
       if (!user) {
@@ -58,21 +53,21 @@ module.exports = {
   // Delete a student and remove them from their email
   async deleteUser(req, res) {
     try {
-      const user = await User.findOneAndRemove({ _id: req.params.userId });
+      const user = await User.findOneAndRemove({ _id: req.params.id });
 
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
 
-      const email = await Email.findOneAndUpdate(
-        { user: req.params.userId },
-        { $pull: { user: req.params.userId } },
+      const thought = await Thought.findOneAndUpdate(
+        { user: req.params.id },
+        { $pull: { user: req.params.id } },
         { new: true }
       );
 
-      if (!email) {
+      if (!thought) {
         return res.status(404).json({
-          message: 'Non existant email',
+          message: 'deleted thoughts',
         });
       }
 
@@ -82,52 +77,66 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  updateUser({ params, body }, res) {
+    User.findOneAndUpdate({ _id: params.id }, body, {
+      new: true,
+      runValidators: true,
+    })
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          res.status(404).json({ message: "No user found with this id!" });
+          return;
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => res.json(err));
+  },
 
-  // Update a User
- // async updateUser(req, res) {
 
 
   // Add an assignment to a student
-  async addThought(req, res) {
-    console.log('You are adding a thought');
+  async addFriend(req, res) {
+    console.log('You are adding a friend');
     console.log(req.body);
 
     try {
-      const thought = await Thought.findOneAndUpdate(
+      const friend = await Friend.findOneAndUpdate(
         { _id: req.params.userId },
-        { $addToSet: { thought: req.body } },
+        { $addToSet: { friends: params.friendId } },
         { runValidators: true, new: true }
       );
 
-      if (!thought) {
+      if (!friend) {
         return res
           .status(404)
           .json({ message: 'no user found' });
       }
 
-      res.json(thought);
+      res.json(friend);
     } catch (err) {
       res.status(500).json(err);
     }
   },
   // Remove thought from a user
-  async removeThought(req, res) {
+  async removeFriend(req, res) {
     try {
-      const thought = await User.findOneAndUpdate(
+      const friend = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $pull: { thought: { thoughtId: req.params.thoughtId } } },
+        { $pull: { friends: params.friendId } },
         { runValidators: true, new: true }
       );
 
-      if (!thought) {
+      if (!friend) {
         return res
           .status(404)
-          .json({ message: 'thought not found' });
+          .json({ message: 'non-existant user' });
       }
 
-      res.json(thought);
+      res.json(friend);
     } catch (err) {
       res.status(500).json(err);
     }
   },
+
+
 };
