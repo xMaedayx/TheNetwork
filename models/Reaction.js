@@ -1,10 +1,9 @@
 const { Schema, Types, model } = require('mongoose');
-const reactionSchema = require('./Reaction');
 
 const reactionSchema = new Schema(
   {
    reactionId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         default: () => new Types.ObjectId(),
 
     },
@@ -40,9 +39,8 @@ reactionSchema.virtual('formattedCreatedAt').get(function() {
   return this.createdAt.toLocaleDateString();
 });
 
-  const Reaction = model('reaction', reactionSchema);
-
-module.exports = Reaction;
+  
+module.exports = reactionSchema;
 
 
 
