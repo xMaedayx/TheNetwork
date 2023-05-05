@@ -59,7 +59,7 @@ module.exports = {
         return res.status(404).json({ message: 'User not found' });
       }
 
-      const thought = await Thought.findOneAndUpdate(
+      const thought = await User.findOneAndUpdate(
         { user: req.params.id },
         { $pull: { user: req.params.id } },
         { new: true }
