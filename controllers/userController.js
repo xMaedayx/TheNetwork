@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongoose').Types;
-const { User, Friend } = require('../models');
+const { User } = require('../models');
 
 
 
@@ -100,9 +100,9 @@ module.exports = {
     console.log(req.body);
 
     try {
-      const friend = await Friend.findOneAndUpdate(
+      const friend = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $addToSet: { friends: params.friendId } },
+        { $addToSet: { friends: req.params.friendId } },
         { runValidators: true, new: true }
       );
 
@@ -122,7 +122,7 @@ module.exports = {
     try {
       const friend = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $pull: { friends: params.friendId } },
+        { $pull: { friends: req.params.friendId } },
         { runValidators: true, new: true }
       );
 
